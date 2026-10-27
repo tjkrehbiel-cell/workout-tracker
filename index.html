@@ -1,0 +1,112 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#9e1b32"><title>Workout Tracker</title>
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:#111316;color:#eee;font-family:system-ui,Roboto,sans-serif}
+header{padding:12px 14px 4px;display:flex;justify-content:space-between;align-items:center;gap:8px}#clock{font-size:14px;color:#bbb}#clock b{display:block;font-size:22px;color:#fff}
+.streak{background:#9e1b32;border-radius:14px;padding:6px 12px;text-align:center;min-width:110px}.streak b{font-size:30px;display:block;line-height:1}.streak small{font-size:11px;display:block}.streak .r{font-size:10px;opacity:.85}.streak .p{font-size:12px;margin-top:3px;background:#0003;border-radius:8px;padding:2px 4px}
+.waterbar{display:flex;align-items:center;gap:8px;margin:6px 14px;background:#132634;border-radius:14px;padding:8px}.waterbar .big{flex:1;background:#1e7fc2;color:#fff;border:0;border-radius:12px;font-size:22px;font-weight:700;padding:14px}.waterbar .sm{background:#24394a;color:#fff;border:0;border-radius:12px;font-size:18px;padding:14px 16px}.waterbar .c{text-align:center;min-width:64px;font-size:11px;color:#9cc}.waterbar .c b{display:block;font-size:24px;color:#fff}
+.stats{display:flex;gap:6px;padding:4px 14px}.stats div{flex:1;background:#1c1f24;border-radius:10px;padding:6px 2px;text-align:center;font-size:10px;color:#aaa}.stats b{display:block;font-size:17px;color:#fff}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;gap:6px}.nav button,.btn{background:#262a31;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:16px}.nav h2{margin:0;font-size:16px;flex:1;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 6px}.dow{text-align:center;font-size:11px;color:#888;padding:3px 0}
+.cell{min-height:62px;border-radius:9px;background:#1c1f24;padding:4px 3px;font-size:12px;position:relative;text-align:center;overflow:hidden}.cell.big{min-height:150px;padding-top:6px}
+.cell .n{color:#aaa;text-align:left;font-size:12px}.cell.big .n{font-size:15px}.cell .s{font-size:18px;font-weight:800;margin-top:2px}.cell.big .s{font-size:19px;letter-spacing:-.5px;margin-top:10px}
+.cell .wa{font-size:10px;color:#8fd3ff}.cell.big .wa{font-size:14px;margin-top:8px}.cell .st{font-size:9px;color:#ffd166}.cell.big .st{font-size:12px;margin-top:6px}
+.cell .f{position:absolute;top:2px;right:3px;font-size:11px}.cell.big .f{font-size:17px}
+.cell.today{outline:2px solid #ff4d6d;outline-offset:-1px}.cell.q{box-shadow:inset 0 0 0 2px #ffb703}.cell.rest{background:repeating-linear-gradient(45deg,#1d2a3a,#1d2a3a 6px,#22344a 6px,#22344a 12px);box-shadow:inset 0 0 0 2px #5aa9e6}.cell.o{opacity:.35}.cell.fut{opacity:.55}
+#ed{position:fixed;inset:0;background:#111316;overflow:auto;display:none;padding:12px 14px 90px}#ed h3{margin:6px 0 10px}
+.w{background:#1c1f24;border-radius:12px;padding:10px;margin-bottom:8px}.w .t{display:flex;justify-content:space-between}.w .a{color:#7fd88a;font-size:14px}
+.row{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}.row input{width:80px;font-size:20px;padding:8px;border-radius:8px;border:1px solid #444;background:#0c0d0f;color:#fff}.q{background:#262a31;color:#fff;border:0;border-radius:8px;padding:10px 12px;font-size:15px}
+.stars{display:flex;gap:4px;align-items:center;margin:6px 0 12px}.stars button{background:none;border:0;font-size:30px;color:#555;padding:2px}.stars button.on{color:#ffd166}.stars .z{font-size:14px;color:#aaa;border:1px solid #555;border-radius:8px;padding:6px 9px}.stars .z.on{border-color:#ffd166}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#181a1e;padding:10px 14px;display:flex;gap:8px}.bar button{flex:1}.pri{background:#9e1b32!important}
+.foot{padding:12px 14px;display:flex;gap:8px;flex-wrap:wrap}.ew input{background:#0c0d0f;color:#fff;border:1px solid #444;border-radius:6px;padding:6px;font-size:14px;width:100%}.ew{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:4px;margin-bottom:4px}
+.wkrow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 9px;align-items:center;font-size:11px;color:#bbb;padding:6px 4px 2px;border-top:1px solid #2a2e35;margin-top:2px}.wkrow b{color:#ff8fa3;font-size:13px}.cell .ex{font-size:9px;color:#c9b8ff}.cell.big .ex{font-size:11px;margin-top:4px}.wbtn{display:none;margin:6px 14px;width:calc(100% - 28px);background:#3b2d63;color:#fff;border:0;border-radius:12px;padding:12px;font-size:17px}.chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}.chips button{background:#262a31;color:#fff;border:0;border-radius:8px;width:40px;height:40px;font-size:15px}.chips button.on{background:#6a4bc4}.wtin{display:flex;gap:8px;align-items:center;margin:6px 0 12px}.wtin input{width:120px;font-size:20px;padding:8px;border-radius:8px;border:1px solid #444;background:#0c0d0f;color:#fff}
+.stepbar input{flex:1;min-width:0;font-size:20px;padding:10px;border-radius:10px;border:1px solid #2f4d3a;background:#0c0d0f;color:#fff}.stepbar{background:#13281c}.stepbar .sm{background:#24452f}.cell .sp{font-size:10px;color:#8ee0a1}.cell.big .sp{font-size:12px;margin-top:4px}
+.legend{font-size:11px;color:#888;padding:6px 14px 0}
+</style></head><body>
+<header><div id="clock"></div><div class="streak"><b id="sk">0</b><small>🔥 day streak</small><div class="r">days 1.5+ · best <span id="bs">0</span></div><div class="p" id="ps">🛌 0 rest passes</div></div></header>
+<div class="waterbar"><button class="sm" onclick="addW(todayK(),-1)">−1</button><button class="big" onclick="addW(todayK(),1)">+1 💧</button><div class="c">today<b id="wt">0</b></div></div>
+<div class="waterbar stepbar"><span style="font-size:22px">👣</span><input id="stm" type="number" inputmode="numeric" min="0" placeholder="steps" onchange="setSt(todayK(),this.value)"><button class="sm" onclick="addSt(todayK(),1000)">+1k</button><button class="sm" onclick="addSt(todayK(),2000)">+2k</button><div class="c">pts<b id="stp">0</b></div></div>
+<button class="wbtn" id="wbtn" onclick="openD(todayK());setTimeout(()=>$('wtv')&&$('wtv').focus(),50)">⚖️ Weigh-in day — enter today's weight</button>
+<div class="stats"><div>Week score<b id="wk">0</b></div><div>Month score<b id="mo">0</b></div><div>💧 week<b id="ww">0</b></div><div>💧 all-time<b id="wa">0</b></div></div>
+<div class="nav"><button onclick="mv(-1)">‹</button><h2 id="mt"></h2><button onclick="mv(1)">›</button><button id="tg" onclick="tog()">Month</button></div>
+<div class="grid" id="g"></div>
+<div class="legend">🔥 1.5+ day (counts) · 🛌 covered by rest pass · 1 pass per 6 streak days</div>
+<div class="foot"><button class="btn" onclick="goT()">Today</button><button class="btn" onclick="editW()">Edit workouts</button><button class="btn" onclick="exp()">Export</button><label class="btn">Import<input type="file" accept=".json" hidden onchange="imp(this)"></label></div>
+<div id="ed"></div>
+<script>const TH=1.5;
+const DEF=[["Sit-ups",75,"sit-ups"],["Upper body",3,"sets"],["Curl",3,"sets"],["Lower body",90,"sec"],["Trampoline",8,"min"],["Bike",2,"mi"]].map((a,i)=>({id:"w"+(i<4?i:i+1),name:a[0],base:a[1],unit:a[2]}));
+function key(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function actual(m,b){return Math.round((+m||0)*b*100)/100}
+function stepPts(st){return Math.floor((+st||0)/2000)*0.5}
+function steps(day){return (day&&+day.steps)||0}
+function score(day){if(!day)return 0;const m=day.m?Object.values(day.m).reduce((s,v)=>s+(+v||0),0):0;return Math.round((m+stepPts(day.steps))*100)/100}
+function kfmt(n){return n>=1000?(Math.floor(n/100)/10)+"k":String(n)}
+// Forward simulation from earliest logged day to today. Returns {streak,best,avail,earned,used,marks:{key:'q'|'rest'}}
+function streakInfo(days,today){
+  const tk=key(today);const ks=Object.keys(days).filter(k=>score(days[k])>=TH&&k<=tk).sort();
+  const r={streak:0,best:0,avail:0,earned:0,used:0,marks:{}};if(!ks.length)return r;
+  let c=0,u=0,rest=[];const d=new Date(ks[0]+"T12:00");
+  while(key(d)<=tk){const k=key(d);
+    if(score(days[k])>=TH){c++;r.marks[k]="q";}
+    else if(k===tk){}               // today pending: no pass, no break
+    else if(Math.floor(c/6)-u>0){u++;r.marks[k]="rest";}
+    else{c=0;u=0;}
+    r.best=Math.max(r.best,c);d.setDate(d.getDate()+1);}
+  r.streak=c;r.used=u;r.earned=Math.floor(c/6);r.avail=r.earned-u;return r}
+function streak(days,today){return streakInfo(days,today).streak}
+function best(days,today){return streakInfo(days,today||new Date()).best}
+function water(day){return (day&&+day.water)||0}
+function weekNum(d){const j=new Date(d.getFullYear(),0,1);const doy=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-j)/864e5);return Math.floor((doy+j.getDay())/7)+1}
+function weekLabel(sun){const sat=new Date(sun);sat.setDate(sat.getDate()+6);const a=weekNum(sun),b=weekNum(sat);return sun.getFullYear()!=sat.getFullYear()?"Wk "+a+" / Wk "+b:"Week "+a}
+function avg(a){return a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length*10)/10:null}
+function lastWeight(days,beforeK){let best=null;for(const k in days){const w=+days[k].wt;if(w>0&&k<beforeK&&(!best||k>best))best=k}return best?+days[best].wt:null}
+function weekStats(days,sun,today){const tk=key(today);let wa=0,mu=0,sp=0,pre=[],post=[],bi=[],lastK=null,firstK=null;
+ for(let i=0;i<7;i++){const d=new Date(sun);d.setDate(d.getDate()+i);const k=key(d);if(k>tk)break;const D=days[k];if(!D)continue;
+  wa+=water(D);mu+=score(D);sp+=steps(D);if(D.pre>0)pre.push(+D.pre);if(D.post>0)post.push(+D.post);if(D.bi>0)bi.push(+D.bi);
+  if(+D.wt>0){if(!firstK)firstK=k;lastK=k}}
+ let wchg=null,wlast=null;if(lastK){wlast=+days[lastK].wt;const p=lastWeight(days,firstK);if(p!=null)wchg=Math.round((wlast-p)*10)/10}
+ return {steps:sp,water:wa,mult:Math.round(mu*100)/100,pre:avg(pre),post:avg(post),bi:avg(bi),weight:wlast,wchg}}
+function isWeighDay(d){return d.getDay()==3||d.getDay()==6}
+
+let S=JSON.parse(localStorage.getItem("wt")||"null")||{w:DEF,days:{}};S.w=S.w||DEF;S.days=S.days||{};S.view=S.view||"2w";S.w=S.w.filter(w=>!(w.id=="w4"&&/walk/i.test(w.name)));const sv=()=>localStorage.setItem("wt",JSON.stringify(S));
+const $=i=>document.getElementById(i),todayK=()=>key(new Date()),fmt=s=>s.toFixed(2).replace(/\.?0+$/,"");
+let V=null;function anchor(){const d=new Date();d.setHours(12,0,0,0);if(S.view=="2w"){d.setDate(d.getDate()-d.getDay()-7)}else d.setDate(1);return d}V=anchor();
+function tick(){const n=new Date();$("clock").innerHTML="<b>"+n.toLocaleTimeString([], {hour:"numeric",minute:"2-digit",second:"2-digit"})+"</b>"+n.toLocaleDateString([], {weekday:"long",month:"long",day:"numeric",year:"numeric"});if(n.getSeconds()==0&&key(n)!==lastK){lastK=key(n);render()}}
+let lastK=todayK();setInterval(tick,1000);tick();
+function cellH(dt,big,info,out){const k=key(dt),t=todayK(),D=S.days[k],s=score(D),mk=info.marks[k],w=water(D),a=Math.min(s/S.w.length,1);
+let c="cell"+(big?" big":"")+(k==t?" today":"")+(mk=="q"?" q":"")+(mk=="rest"?" rest":"")+(out?" o":"")+(k>t?" fut":"");
+const bg=s>0&&mk!="rest"?`style="background:rgba(158,27,50,${.25+.75*a})"`:"";
+return `<div class="${c}" ${bg} onclick="openD('${k}')"><div class="n">${dt.getDate()}</div>${mk=="q"?'<span class="f">🔥</span>':mk=="rest"?'<span class="f">🛌</span>':""}<div class="s">${s>0?fmt(s):(mk=="rest"?"rest":"")}</div><div class="wa">${w?"💧"+w:""}</div><div class="sp">${steps(D)?"👣"+kfmt(steps(D)):""}</div><div class="st">${D&&(D.pre||D.post)?(D.pre||0)+"→"+(D.post||0)+"★":""}</div><div class="ex">${D&&+D.wt>0?"⚖️"+D.wt:""}${D&&D.bi>0?" BI "+D.bi:""}</div></div>`}
+function weekRow(sun){const st=weekStats(S.days,sun,new Date()),f=v=>v==null?"—":v;const wc=st.wchg==null?"":` (${st.wchg>0?"+":""}${st.wchg})`;
+return `<div class="wkrow"><b>${weekLabel(sun)}</b><span>💧${st.water}</span><span>👣${kfmt(st.steps)}</span><span>× ${fmt(st.mult)}</span><span>pre ${f(st.pre)}★</span><span>post ${f(st.post)}★</span><span>BI ${f(st.bi)}</span>${st.weight!=null?`<span>⚖️${st.weight}${wc}</span>`:""}</div>`}
+function render(){const info=streakInfo(S.days,new Date()),t=todayK();let h="SMTWTFS".split("").map(c=>'<div class="dow">'+c+"</div>").join("");let sun,n,big,vm=-1;
+if(S.view=="2w"){const e=new Date(V);e.setDate(e.getDate()+13);$("mt").textContent=V.toLocaleDateString([], {month:"short",day:"numeric"})+" – "+e.toLocaleDateString([], {month:"short",day:"numeric",year:"numeric"});sun=new Date(V);n=2;big=1;$("tg").textContent="Month"}
+else{const y=V.getFullYear();vm=V.getMonth();$("mt").textContent=V.toLocaleDateString([], {month:"long",year:"numeric"});sun=new Date(y,vm,1,12);sun.setDate(1-sun.getDay());const L=new Date(y,vm+1,0).getDate();n=Math.ceil((new Date(y,vm,1).getDay()+L)/7);big=0;$("tg").textContent="2 Weeks"}
+for(let w=0;w<n;w++){h+=weekRow(sun);for(let i=0;i<7;i++){const d=new Date(sun);d.setDate(d.getDate()+i);h+=cellH(d,big,info,vm>=0&&d.getMonth()!=vm)}sun.setDate(sun.getDate()+7)}
+$("g").innerHTML=h;$("sk").textContent=info.streak;$("bs").textContent=info.best;$("ps").textContent="🛌 "+info.avail+" rest pass"+(info.avail==1?"":"es");
+const now=new Date();let wk=0,ww=0;for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()-now.getDay()+i);wk+=score(S.days[key(d)]);ww+=water(S.days[key(d)])}
+let mo=0;const L2=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();for(let d=1;d<=L2;d++)mo+=score(S.days[key(new Date(now.getFullYear(),now.getMonth(),d))]);
+let wa=0;for(const k in S.days)wa+=water(S.days[k]);$("wk").textContent=fmt(wk);$("mo").textContent=fmt(mo);$("ww").textContent=ww;$("wa").textContent=wa;$("wt").textContent=water(S.days[t]);const D0=S.days[t];if(document.activeElement!==$("stm"))$("stm").value=steps(D0)||"";$("stp").textContent=fmt(stepPts(steps(D0)));$("wbtn").style.display=isWeighDay(new Date())&&!(D0&&+D0.wt>0)?"block":"none";}
+function mv(n){if(S.view=="2w")V.setDate(V.getDate()+14*n);else V.setMonth(V.getMonth()+n);render()}function goT(){V=anchor();render()}function tog(){S.view=S.view=="2w"?"m":"2w";sv();goT()}
+function day(k){const D=S.days[k]||(S.days[k]={m:{},pre:0,post:0,water:0});D.m=D.m||{};return D}
+function setSt(k,v){const D=day(k);D.steps=Math.max(0,Math.round(+v||0));if(!D.steps)delete D.steps;sv();if($("est")){$("est").value=D.steps||"";$("esp").textContent=fmt(stepPts(D.steps))+" pts";$("ds").textContent=fmt(score(D))}render()}
+function addSt(k,n){setSt(k,steps(day(k))+n)}
+function addW(k,n){const D=day(k);D.water=Math.max(0,water(D)+n);sv();if($("ew"))$("ew").textContent=D.water;render()}
+let K;function openD(k){K=k;const D=day(k);const dt=new Date(k+"T12:00");let h=`<h3>${dt.toLocaleDateString([], {weekday:"long",month:"long",day:"numeric"})} — total <span id="ds">${fmt(score(D))}</span></h3>`;
+h+=`<div class="waterbar" style="margin:0 0 10px"><button class="sm" onclick="addW(K,-1)">−1</button><button class="big" onclick="addW(K,1)">+1 💧</button><div class="c">bottles<b id="ew">${water(D)}</b></div></div>`;
+h+=`<div class="waterbar stepbar" style="margin:0 0 10px"><span style="font-size:22px">👣</span><input id="est" type="number" inputmode="numeric" min="0" placeholder="steps" value="${steps(D)||""}" onchange="setSt(K,this.value)"><button class="sm" onclick="addSt(K,1000)">+1k</button><button class="sm" onclick="addSt(K,2000)">+2k</button><div class="c"><b id="esp" style="font-size:16px">${fmt(stepPts(steps(D)))} pts</b>2000 = 0.5</div></div>`;if(D.m.w4&&!S.w.find(x=>x.id=="w4"))h+=`<div class="w" style="opacity:.7">Fast walk (old entry): ${D.m.w4} × still counts</div>`;h+="<div>Pre-go feel</div>"+sb("pre",D.pre||0);
+for(const w of S.w){const v=D.m[w.id]||"";h+=`<div class="w"><div class="t"><b>${w.name} × ${w.base} ${w.unit}</b><span class="a" id="a${w.id}">${v?+actual(v,w.base)+" "+w.unit:""}</span></div><div class="row"><input type="number" inputmode="decimal" step="0.01" min="0" value="${v}" id="i${w.id}" oninput="setM('${w.id}',this.value)">${[0.5,1,1.5].map(q=>`<button class="q" onclick="setM('${w.id}',${q},1)">${q}</button>`).join("")}<button class="q" onclick="setM('${w.id}','',1)">✕</button></div></div>`}
+h+="<div>Post-go feel</div>"+sb("post",D.post||0);if(isWeighDay(dt))h+=`<div>⚖️ Weight (lbs) — ${dt.getDay()==3?"Wednesday":"Saturday"} weigh-in</div><div class="wtin"><input id="wtv" type="number" inputmode="decimal" step="0.1" min="0" value="${D.wt||""}" oninput="setWt(this.value)"> lbs</div>`;h+="<div>BI# (body image, optional)</div>"+bic(D.bi||0);h+='<div class="bar"><button class="btn pri" onclick="closeE()">Done</button></div>';$("ed").innerHTML=h;$("ed").style.display="block"}
+function sb(f,v){let h=`<div class="stars" id="s${f}"><button class="z${v==0?" on":""}" onclick="setS('${f}',0)">0</button>`;for(let i=1;i<=5;i++)h+=`<button class="${i<=v?"on":""}" onclick="setS('${f}',${i})">★</button>`;return h+"</div>"}
+function bic(v){let h='<div class="chips" id="bic">';for(let i=1;i<=10;i++)h+=`<button class="${i==v?"on":""}" onclick="setBI(${i})">${i}</button>`;return h+"</div>"}
+function setBI(v){const D=S.days[K];D.bi=D.bi==v?0:v;sv();$("bic").outerHTML=bic(D.bi)}
+function setWt(v){const D=S.days[K];if(+v>0)D.wt=Math.round(+v*10)/10;else delete D.wt;sv()}
+function setS(f,v){S.days[K][f]=v;sv();$("s"+f).outerHTML=sb(f,v)}
+function setM(id,v,b){const D=S.days[K],w=S.w.find(x=>x.id==id);if(v===""||+v==0)delete D.m[id];else D.m[id]=+v;if(b)$("i"+id).value=v;$("a"+id).textContent=D.m[id]?+actual(D.m[id],w.base)+" "+w.unit:"";$("ds").textContent=fmt(score(D));sv()}
+function closeE(){$("ed").style.display="none";$("ed").innerHTML="";render()}
+function editW(){let h="<h3>Workouts</h3>";S.w.forEach((w,i)=>h+=`<div class="ew"><input value="${w.name}" onchange="S.w[${i}].name=this.value;sv()"><input type="number" step="any" value="${w.base}" onchange="S.w[${i}].base=+this.value;sv()"><input value="${w.unit}" onchange="S.w[${i}].unit=this.value;sv()"><button class="q" onclick="if(confirm('Remove?')){S.w.splice(${i},1);sv();editW()}">🗑</button></div>`);
+h+=`<button class="btn" onclick="S.w.push({id:'w'+Date.now(),name:'New',base:1,unit:'reps'});sv();editW()">+ Add workout</button><div class="bar"><button class="btn pri" onclick="closeE()">Done</button></div>`;$("ed").innerHTML=h;$("ed").style.display="block"}
+function exp(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:"application/json"}));a.download="workout-backup-"+todayK()+".json";a.click()}
+function imp(el){const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.w||!d.days)throw 0;S=d;S.view=S.view||"2w";sv();goT();alert("Imported")}catch(e){alert("Bad file")}};r.readAsText(el.files[0])}
+render();if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
+</script></body></html>
